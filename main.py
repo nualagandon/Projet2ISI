@@ -2,6 +2,7 @@ from tkinter import *
 from database import connecter_bd, creer_tables
 from categorie_repas import CategorieRepas
 from interface_entrees import creer_page_entrees
+from interface_plats import creer_page_plats
 
 # Connexion à la base de données
 connexion = connecter_bd()
@@ -24,23 +25,19 @@ def afficher_page(page):
 
 # Création de la page Entrées à l'aide de la fonction creer_page_entrees
 entrees_frame = creer_page_entrees(ma_fenetre, connexion)
-
+plats_frame = creer_page_plats(ma_fenetre, connexion)
 # Liste contenant toutes les pages de l'application
-toutes_les_pages = [entrees_frame]
+toutes_les_pages = [entrees_frame, plats_frame]
 
 # Création de la barre de navigation
 navbar = Frame(ma_fenetre, bg="#0d1b1e", height=50)
 navbar.grid(row=0, column=0, sticky="ew")
 
-# Conteneur pour les boutons de la barre de navigation
-conteneur_boutons = Frame(ma_fenetre, bg="#0d1b1e")
-conteneur_boutons.grid(row=0, column=0, sticky="ew")
-
 # Liste des boutons de la barre de navigation
 boutons = [
     ("Accueil", lambda: print("À venir")),
     ("Entrées", lambda: afficher_page(entrees_frame)),
-    ("Plats", lambda: print("À venir")),
+    ("Plats", lambda: afficher_page(plats_frame)),
     ("Desserts", lambda: print("À venir")),
     ("Boissons", lambda: print("À venir")),
     ("Paramètres", lambda: print("Paramètres"))
@@ -49,7 +46,7 @@ boutons = [
 # Création des boutons dans barre de navigation
 for i, (nom, commande) in enumerate(boutons):
     bouton = Button(
-        conteneur_boutons,
+        navbar,
         text=nom,
         command=commande,
         bg="#0d1b1e",
