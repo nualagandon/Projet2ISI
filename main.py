@@ -3,6 +3,7 @@ from database import connecter_bd, creer_tables
 from categorie_repas import CategorieRepas
 from interface_entrees import creer_page_entrees
 from interface_plats import creer_page_plats
+from interface_desserts import creer_page_desserts
 
 # Connexion à la base de données
 connexion = connecter_bd()
@@ -26,8 +27,13 @@ def afficher_page(page):
 # Création de la page Entrées à l'aide de la fonction creer_page_entrees
 entrees_frame = creer_page_entrees(ma_fenetre, connexion)
 plats_frame = creer_page_plats(ma_fenetre, connexion)
+
+# Création de la page Entrées à l'aide de la fonction creer_page_desserts
+desserts_frame = creer_page_entrees(ma_fenetre, connexion)
+plats_frame = creer_page_plats(ma_fenetre, connexion)
+
 # Liste contenant toutes les pages de l'application
-toutes_les_pages = [entrees_frame, plats_frame]
+toutes_les_pages = [entrees_frame, plats_frame, desserts_frame]
 
 # Création de la barre de navigation
 navbar = Frame(ma_fenetre, bg="#0d1b1e", height=50)
@@ -38,7 +44,7 @@ boutons = [
     ("Accueil", lambda: print("À venir")),
     ("Entrées", lambda: afficher_page(entrees_frame)),
     ("Plats", lambda: afficher_page(plats_frame)),
-    ("Desserts", lambda: print("À venir")),
+    ("Desserts", lambda: afficher_page(desserts_frame)),
     ("Boissons", lambda: print("À venir")),
     ("Paramètres", lambda: print("Paramètres"))
 ]
