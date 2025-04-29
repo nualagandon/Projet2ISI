@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from categorie_repas import CategorieRepas
+from interface_parametres import parametres_sauvegardes
 
 def creer_page_entrees(ma_fenetre, connection):
     entrees_frame = Frame(ma_fenetre, bg="#f3e0ec")
@@ -23,14 +24,26 @@ def creer_page_entrees(ma_fenetre, connection):
         etu = reponse_nom_etudiant_entree.get()
         qt = reponse_qt_entree_apportee.get()
 
-        if nom and etu and qt:
-            entrees.ajouter(nom, etu, qt)
-            charger_entrees()
-            reponse_nom_entree.set("")
-            reponse_nom_etudiant_entree.set("")
-            reponse_qt_entree_apportee.set("")
-        else:
+        if not nom or not etu or not qt:
             print("Veuillez remplir tous les champs.")
+            return
+        
+        total_entrees = sum(
+            int(tableau_entrees.item(item, "values")[2]) for item in tableau_entrees.get_children()
+        )
+        
+        limite_entrees = parametres_sauvegardes.get("nb_max_entrees", 0)
+
+        if total_entrees >= limite_entrees:
+            print(f"Limite atteinte pour les entrées ({limite_entrees}). Vous ne pouvez pas ajouter plus d'entrées.")
+            return 
+        
+        entrees.ajouter(nom, etu, qt)
+        charger_entrees()
+        reponse_nom_entree.set("")
+        reponse_nom_etudiant_entree.set("")
+        reponse_qt_entree_apportee.set("")
+        
 
     def supprimer_entree():
         entrees.supprimer(tableau_entrees)
