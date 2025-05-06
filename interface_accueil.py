@@ -46,8 +46,9 @@ def creer_page_accueil(ma_fenetre, connexion) :
         nb_max_entrees = parametres_sauvegardes.get("nb_max_entrees")
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_entree = ttk.Progressbar(accueil_frame, length=taille, value=(taille - (nb_max_entrees - nb_entrees)/100 * taille)/100)
-    barre_entree.place(x=30, y = 30)
+    ttk.Progressbar(accueil_frame, 
+                    length=taille, 
+                    value=(taille - (nb_max_entrees - nb_entrees)/100 * taille)/100).grid(row=2, column=0, columnspan=2, pady=5)
 
     Label(accueil_frame, 
           text=reste_repas(nb_entrees, parametres_sauvegardes.get("nb_max_entrees")), 
@@ -78,8 +79,9 @@ def creer_page_accueil(ma_fenetre, connexion) :
 
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_plats = ttk.Progressbar(accueil_frame, length=taille, value=(taille - ((nb_max_plats - nb_plats)/100 * taille))/100)
-    barre_plats.place(x=30, y = 30)
+    ttk.Progressbar(accueil_frame,
+                    length=taille, 
+                    value=(taille - ((nb_max_plats - nb_plats)/100 * taille))/100).grid(row=5, column=0, columnspan=2, pady=5)
 
     Label(accueil_frame, 
           text=reste_repas(nb_plats, parametres_sauvegardes.get("nb_max_plats")), 
@@ -110,8 +112,9 @@ def creer_page_accueil(ma_fenetre, connexion) :
 
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_desserts = ttk.Progressbar(accueil_frame, length=taille, value=(taille - ((nb_max_desserts - nb_desserts)/100 * taille)))
-    barre_desserts.place(x=30, y = 30)
+    ttk.Progressbar(accueil_frame,
+                    length=taille, 
+                    value=(taille - ((nb_max_desserts - nb_desserts)/100 * taille))).grid(row=8, column=0, columnspan=2, pady=5)
 
     Label(accueil_frame, 
           text=reste_repas(nb_desserts, parametres_sauvegardes.get("nb_max_desserts")), 
@@ -121,7 +124,7 @@ def creer_page_accueil(ma_fenetre, connexion) :
 
     ####Partie desserts de la page 
     Label(accueil_frame, 
-          text="Desserts", 
+          text="Boissons", 
           bg="#f3e0ec", 
           fg="#450920", 
           font=("Arial", 18)).grid(row=10, column=0, columnspan=2, pady=5)
@@ -140,8 +143,9 @@ def creer_page_accueil(ma_fenetre, connexion) :
         nb_max_boissons = parametres_sauvegardes.get("nb_max_boissons")
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_boissons = ttk.Progressbar(accueil_frame, length=taille, value=(taille - ((nb_max_boissons - nb_boissons)/100 * taille)))
-    barre_boissons.place(x=30, y = 30)
+    ttk.Progressbar(accueil_frame, 
+                    length=taille, 
+                    value=(taille - ((nb_max_boissons - nb_boissons)/100 * taille))).grid(row=11, column=0, columnspan=2, pady=5)
 
     Label(accueil_frame, 
           text=reste_repas(nb_boissons, (parametres_sauvegardes.get("nb_max_boissons"))), 
