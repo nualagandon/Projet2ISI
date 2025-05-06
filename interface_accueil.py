@@ -82,8 +82,4 @@ def creer_page_accueil(ma_fenetre, connexion) :
     Label(boissons_accueil_frame, text=reste_repas(nb_boissons, nb_max_boissons), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
 
 
-
-
-
-
     return accueil_frame
