@@ -30,10 +30,10 @@ def creer_page_accueil(ma_fenetre, connexion) :
     nb_entrees = curs.execute(requete)
     curs.close()
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_entree = ttk.Progressbar(entree_accueil_frame, length=taille).pack(pady=(taille - ((nb_max_entrees - nb_entrees)/100 * taille)))
+    barre_entree = ttk.Progressbar(entree_accueil_frame, length=taille).pack(pady=(taille - ((parametres_sauvegardes["nb_max_entrees"] - nb_entrees)/100 * taille)))
     barre_entree.place(x=30, y = 30)
 
-    Label(entree_accueil_frame, text=reste_repas(nb_entrees, nb_max_entrees), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
+    Label(entree_accueil_frame, text=reste_repas(nb_entrees, parametres_sauvegardes["nb_max_entrees"]), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
 
 
     ####Partie plat de la page 
@@ -46,10 +46,10 @@ def creer_page_accueil(ma_fenetre, connexion) :
     nb_plats = curs.execute(requete)
     curs.close()
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_plats = ttk.Progressbar(plats_accueil_frame, length=taille).pack(pady=(taille - ((nb_max_plats - nb_plats)/100 * taille)))
+    barre_plats = ttk.Progressbar(plats_accueil_frame, length=taille).pack(pady=(taille - ((parametres_sauvegardes["nb_max_plats"] - nb_plats)/100 * taille)))
     barre_plats.place(x=30, y = 30)
 
-    Label(plats_accueil_frame, text=reste_repas(nb_plats, nb_max_plats), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
+    Label(plats_accueil_frame, text=reste_repas(nb_plats, parametres_sauvegardes["nb_max_plats"]), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
 
     ####Partie desserts de la page 
     desserts_accueil_frame = Frame(accueil_frame)
@@ -61,10 +61,10 @@ def creer_page_accueil(ma_fenetre, connexion) :
     nb_desserts = curs.execute(requete)
     curs.close()
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_desserts = ttk.Progressbar(desserts_accueil_frame, length=taille).pack(pady=(taille - ((nb_max_desserts - nb_desserts)/100 * taille)))
+    barre_desserts = ttk.Progressbar(desserts_accueil_frame, length=taille).pack(pady=(taille - ((parametres_sauvegardes["nb_max_desserts"] - nb_desserts)/100 * taille)))
     barre_desserts.place(x=30, y = 30)
 
-    Label(desserts_accueil_frame, text=reste_repas(nb_desserts, nb_max_desserts), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
+    Label(desserts_accueil_frame, text=reste_repas(nb_desserts, parametres_sauvegardes["nb_max_desserts"]), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
 
     ####Partie desserts de la page 
     boissons_accueil_frame = Frame(accueil_frame)
@@ -76,10 +76,10 @@ def creer_page_accueil(ma_fenetre, connexion) :
     nb_boissons = curs.execute(requete)
     curs.close()
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_boissons = ttk.Progressbar(boissons_accueil_frame, length=taille).pack(pady=(taille - ((nb_max_boissons - nb_boissons)/100 * taille)))
+    barre_boissons = ttk.Progressbar(boissons_accueil_frame, length=taille).pack(pady=(taille - ((parametres_sauvegardes["nb_max_boissons"] - nb_boissons)/100 * taille)))
     barre_boissons.place(x=30, y = 30)
 
-    Label(boissons_accueil_frame, text=reste_repas(nb_boissons, nb_max_boissons), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
+    Label(boissons_accueil_frame, text=reste_repas(nb_boissons, parametres_sauvegardes["nb_max_boissons"]), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
 
 
     return accueil_frame
