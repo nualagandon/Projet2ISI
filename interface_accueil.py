@@ -24,7 +24,7 @@ def creer_page_accueil(ma_fenetre, connexion) :
     entree_accueil_frame = Frame(accueil_frame)
     Label(entree_accueil_frame, text="Entrées", bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=0, column=0, columnspan=2, pady=5)
     
-    #On récupère le nombre de plats enregistré dans la base
+    #On récupère le nombre de d'entrées enregistrées dans la base
     curs = connexion.cursor()
     requete = "count(*) from Entrees;"
     nb_entrees = curs.execute(requete)
