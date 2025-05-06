@@ -17,14 +17,21 @@ def creer_page_accueil(ma_fenetre, connexion) :
             return "Il en manque " + (nb_max-nb) + ". "
     
 
-    Label(accueil_frame, text="Total", bg="#f3e0ec", fg="#450920", font=("Arial", 28)).grid(row=0, column=0, columnspan=2, pady=10)
+    Label(accueil_frame, 
+          text="Total", 
+          bg="#f3e0ec", 
+          fg="#450920", 
+          font=("Arial", 28)).grid(row=0, column=0, columnspan=2, pady=10)
 
     #choix de la taille des barres de progression
     taille = 400
 
     ####Partie entrée de la page 
-    entree_accueil_frame = Frame(accueil_frame)
-    Label(entree_accueil_frame, text="Entrées", bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=0, column=0, columnspan=2, pady=5)
+    Label(accueil_frame, 
+          text="Entrées", 
+          bg="#f3e0ec", 
+          fg="#450920", 
+          font=("Arial", 18)).grid(row=1, column=0, columnspan=2, pady=5)
     
     #On récupère le nombre de d'entrées enregistrées dans la base
     curs = connexion.cursor()
@@ -39,15 +46,22 @@ def creer_page_accueil(ma_fenetre, connexion) :
         nb_max_entrees = parametres_sauvegardes.get("nb_max_entrees")
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_entree = ttk.Progressbar(entree_accueil_frame, length=taille).pack(pady=(taille - (nb_max_entrees - nb_entrees)/100 * taille))
+    barre_entree = ttk.Progressbar(accueil_frame, length=taille, value=(taille - (nb_max_entrees - nb_entrees)/100 * taille)/100)
     barre_entree.place(x=30, y = 30)
 
-    Label(entree_accueil_frame, text=reste_repas(nb_entrees, parametres_sauvegardes.get("nb_max_entrees")), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
+    Label(accueil_frame, 
+          text=reste_repas(nb_entrees, parametres_sauvegardes.get("nb_max_entrees")), 
+          bg="#f3e0ec", 
+          fg="#450920", 
+          font=("Arial", 8)).grid(row=3, column=0, columnspan=2, pady=5)
 
 
     ####Partie plat de la page 
-    plats_accueil_frame = Frame(accueil_frame)
-    Label(plats_accueil_frame, text="Plats", bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=0, column=0, columnspan=2, pady=5)
+    Label(accueil_frame, 
+          text="Plats", 
+          bg="#f3e0ec", 
+          fg="#450920", 
+          font=("Arial", 18)).grid(row=4, column=0, columnspan=2, pady=5)
     
     #On récupère le nombre de plats enregistré dans la base
     curs = connexion.cursor()
@@ -64,14 +78,21 @@ def creer_page_accueil(ma_fenetre, connexion) :
 
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_plats = ttk.Progressbar(plats_accueil_frame, length=taille).pack(pady=(taille - ((nb_max_plats - nb_plats)/100 * taille)))
+    barre_plats = ttk.Progressbar(accueil_frame, length=taille, value=(taille - ((nb_max_plats - nb_plats)/100 * taille))/100)
     barre_plats.place(x=30, y = 30)
 
-    Label(plats_accueil_frame, text=reste_repas(nb_plats, parametres_sauvegardes.get("nb_max_plats")), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
+    Label(accueil_frame, 
+          text=reste_repas(nb_plats, parametres_sauvegardes.get("nb_max_plats")), 
+          bg="#f3e0ec", 
+          fg="#450920", 
+          font=("Arial", 8)).grid(row=6, column=0, columnspan=2, pady=5)
 
     ####Partie desserts de la page 
-    desserts_accueil_frame = Frame(accueil_frame)
-    Label(desserts_accueil_frame, text="Desserts", bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=0, column=0, columnspan=2, pady=5)
+    Label(accueil_frame,
+          text="Desserts", 
+          bg="#f3e0ec", 
+          fg="#450920", 
+          font=("Arial", 18)).grid(row=7, column=0, columnspan=2, pady=5)
     
     #On récupère le nombre de desserts enregistré dans la base
     curs = connexion.cursor()
@@ -89,14 +110,21 @@ def creer_page_accueil(ma_fenetre, connexion) :
 
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_desserts = ttk.Progressbar(desserts_accueil_frame, length=taille).pack(pady=(taille - ((nb_max_desserts - nb_desserts)/100 * taille)))
+    barre_desserts = ttk.Progressbar(accueil_frame, length=taille, value=(taille - ((nb_max_desserts - nb_desserts)/100 * taille)))
     barre_desserts.place(x=30, y = 30)
 
-    Label(desserts_accueil_frame, text=reste_repas(nb_desserts, parametres_sauvegardes.get("nb_max_desserts")), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
+    Label(accueil_frame, 
+          text=reste_repas(nb_desserts, parametres_sauvegardes.get("nb_max_desserts")), 
+          bg="#f3e0ec", 
+          fg="#450920", 
+          font=("Arial", 8)).grid(row=9, column=0, columnspan=2, pady=5)
 
     ####Partie desserts de la page 
-    boissons_accueil_frame = Frame(accueil_frame)
-    Label(desserts_accueil_frame, text="Desserts", bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=0, column=0, columnspan=2, pady=5)
+    Label(accueil_frame, 
+          text="Desserts", 
+          bg="#f3e0ec", 
+          fg="#450920", 
+          font=("Arial", 18)).grid(row=10, column=0, columnspan=2, pady=5)
     
     #On récupère le nombre de boissons enregistré dans la base
     curs = connexion.cursor()
@@ -112,10 +140,14 @@ def creer_page_accueil(ma_fenetre, connexion) :
         nb_max_boissons = parametres_sauvegardes.get("nb_max_boissons")
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_boissons = ttk.Progressbar(boissons_accueil_frame, length=taille).pack(pady=(taille - ((nb_max_boissons - nb_boissons)/100 * taille)))
+    barre_boissons = ttk.Progressbar(accueil_frame, length=taille, value=(taille - ((nb_max_boissons - nb_boissons)/100 * taille)))
     barre_boissons.place(x=30, y = 30)
 
-    Label(boissons_accueil_frame, text=reste_repas(nb_boissons, (parametres_sauvegardes.get("nb_max_boissons"))), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
+    Label(accueil_frame, 
+          text=reste_repas(nb_boissons, (parametres_sauvegardes.get("nb_max_boissons"))), 
+          bg="#f3e0ec", 
+          fg="#450920", 
+          font=("Arial", 8)).grid(row=12, column=0, columnspan=2, pady=5)
     
 
     return accueil_frame

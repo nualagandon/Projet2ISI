@@ -5,8 +5,9 @@ from interface_entrees import creer_page_entrees
 from interface_plats import creer_page_plats
 from interface_desserts import creer_page_desserts
 from interface_boissons import creer_page_boissons
-from interface_accueil import creer_page_accueil
 from interface_parametres import creer_page_parametres
+from interface_accueil import creer_page_accueil
+
 
 # Connexion à la base de données
 connexion = connecter_bd()
