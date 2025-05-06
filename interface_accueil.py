@@ -6,10 +6,12 @@ from interface_parametres import parametres_sauvegardes
 def creer_page_accueil(ma_fenetre, connexion) :
     accueil_frame = Frame(ma_fenetre, bg="#f3e0ec")
     accueil_frame.grid(row=1, column=0, sticky="nsew")
-
+    
     #definition de la fonction permettant de savoir quel texte s'affiche en dessous de la barre de progression
     def reste_repas(nb, nb_max) :
-        if nb_max - nb == 0 : 
+        if nb_max == None :
+            return "Veuillez entrer le nombre de participants dans les paramètres"
+        elif nb_max - nb == 0 : 
             return "Il y en a assez."
         else : 
             return "Il en manque " + (nb_max-nb) + ". "
@@ -27,13 +29,20 @@ def creer_page_accueil(ma_fenetre, connexion) :
     #On récupère le nombre de d'entrées enregistrées dans la base
     curs = connexion.cursor()
     requete = "select count(*) from Entrees;"
-    nb_entrees = curs.execute(requete)
+    curs.execute(requete)
+    nb_entrees = curs.fetchone()[0]
     curs.close()
+    #vérification de la valeur nb_max_entrees
+    if parametres_sauvegardes.get("nb_max_entrees") == None :
+        nb_max_entrees = 1
+    else : 
+        nb_max_entrees = parametres_sauvegardes.get("nb_max_entrees")
+
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_entree = ttk.Progressbar(entree_accueil_frame, length=taille).pack(pady=(taille - ((parametres_sauvegardes["nb_max_entrees"] - nb_entrees)/100 * taille)))
+    barre_entree = ttk.Progressbar(entree_accueil_frame, length=taille).pack(pady=(taille - (nb_max_entrees - nb_entrees)/100 * taille))
     barre_entree.place(x=30, y = 30)
 
-    Label(entree_accueil_frame, text=reste_repas(nb_entrees, parametres_sauvegardes["nb_max_entrees"]), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
+    Label(entree_accueil_frame, text=reste_repas(nb_entrees, parametres_sauvegardes.get("nb_max_entrees")), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
 
 
     ####Partie plat de la page 
@@ -43,13 +52,22 @@ def creer_page_accueil(ma_fenetre, connexion) :
     #On récupère le nombre de plats enregistré dans la base
     curs = connexion.cursor()
     requete = "select count(*) from Plats;"
-    nb_plats = curs.execute(requete)
+    curs.execute(requete)
+    nb_plats = curs.fetchone()[0]
     curs.close()
+
+    #vérification de la valeur nb_max_plats
+    if parametres_sauvegardes.get("nb_max_plats") == None :
+        nb_max_plats = 1
+    else : 
+        nb_max_plats = parametres_sauvegardes.get("nb_max_plats")
+
+
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_plats = ttk.Progressbar(plats_accueil_frame, length=taille).pack(pady=(taille - ((parametres_sauvegardes["nb_max_plats"] - nb_plats)/100 * taille)))
+    barre_plats = ttk.Progressbar(plats_accueil_frame, length=taille).pack(pady=(taille - ((nb_max_plats - nb_plats)/100 * taille)))
     barre_plats.place(x=30, y = 30)
 
-    Label(plats_accueil_frame, text=reste_repas(nb_plats, parametres_sauvegardes["nb_max_plats"]), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
+    Label(plats_accueil_frame, text=reste_repas(nb_plats, parametres_sauvegardes.get("nb_max_plats")), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
 
     ####Partie desserts de la page 
     desserts_accueil_frame = Frame(accueil_frame)
@@ -58,13 +76,23 @@ def creer_page_accueil(ma_fenetre, connexion) :
     #On récupère le nombre de desserts enregistré dans la base
     curs = connexion.cursor()
     requete = "select count(*) from Desserts;"
-    nb_desserts = curs.execute(requete)
+    curs.execute(requete)
+    nb_desserts = curs.fetchone()[0]
     curs.close()
+
+    #vérification de la valeur nb_max_desserts
+    if parametres_sauvegardes.get("nb_max_desserts") == None :
+        nb_max_desserts = 1
+    else : 
+        nb_max_desserts = parametres_sauvegardes.get("nb_max_desserts")
+
+
+
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_desserts = ttk.Progressbar(desserts_accueil_frame, length=taille).pack(pady=(taille - ((parametres_sauvegardes["nb_max_desserts"] - nb_desserts)/100 * taille)))
+    barre_desserts = ttk.Progressbar(desserts_accueil_frame, length=taille).pack(pady=(taille - ((nb_max_desserts - nb_desserts)/100 * taille)))
     barre_desserts.place(x=30, y = 30)
 
-    Label(desserts_accueil_frame, text=reste_repas(nb_desserts, parametres_sauvegardes["nb_max_desserts"]), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
+    Label(desserts_accueil_frame, text=reste_repas(nb_desserts, parametres_sauvegardes.get("nb_max_desserts")), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
 
     ####Partie desserts de la page 
     boissons_accueil_frame = Frame(accueil_frame)
@@ -73,13 +101,21 @@ def creer_page_accueil(ma_fenetre, connexion) :
     #On récupère le nombre de boissons enregistré dans la base
     curs = connexion.cursor()
     requete = "select count(*) from Boissons;"
-    nb_boissons = curs.execute(requete)
+    curs.execute(requete)
+    nb_boissons = curs.fetchone()[0]
     curs.close()
+
+    #vérification de la valeur nb_max_desserts
+    if parametres_sauvegardes.get("nb_max_boissons") == None :
+        nb_max_boissons = 1
+    else : 
+        nb_max_boissons = parametres_sauvegardes.get("nb_max_boissons")
+
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
-    barre_boissons = ttk.Progressbar(boissons_accueil_frame, length=taille).pack(pady=(taille - ((parametres_sauvegardes["nb_max_boissons"] - nb_boissons)/100 * taille)))
+    barre_boissons = ttk.Progressbar(boissons_accueil_frame, length=taille).pack(pady=(taille - ((nb_max_boissons - nb_boissons)/100 * taille)))
     barre_boissons.place(x=30, y = 30)
 
-    Label(boissons_accueil_frame, text=reste_repas(nb_boissons, parametres_sauvegardes["nb_max_boissons"]), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
-
+    Label(boissons_accueil_frame, text=reste_repas(nb_boissons, (parametres_sauvegardes.get("nb_max_boissons"))), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
+    
 
     return accueil_frame
