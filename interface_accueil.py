@@ -66,6 +66,10 @@ def creer_page_accueil(ma_fenetre, connexion) :
 
     Label(desserts_accueil_frame, text=reste_repas(nb_desserts, nb_max_desserts), bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=3, column=0, columnspan=2, pady=5)
 
+    ####Partie desserts de la page 
+    boissons_accueil_frame = Frame(accueil_frame)
+    Label(desserts_accueil_frame, text="Desserts", bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=0, column=0, columnspan=2, pady=5)
+    
     #On récupère le nombre de boissons enregistré dans la base
     curs = connexion.cursor()
     requete = "count(*) from Boissons;"
