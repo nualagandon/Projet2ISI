@@ -26,7 +26,7 @@ def creer_page_accueil(ma_fenetre, connexion) :
     
     #On récupère le nombre de d'entrées enregistrées dans la base
     curs = connexion.cursor()
-    requete = "count(*) from Entrees;"
+    requete = "select count(*) from Entrees;"
     nb_entrees = curs.execute(requete)
     curs.close()
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
@@ -42,7 +42,7 @@ def creer_page_accueil(ma_fenetre, connexion) :
     
     #On récupère le nombre de plats enregistré dans la base
     curs = connexion.cursor()
-    requete = "count(*) from Plats;"
+    requete = "select count(*) from Plats;"
     nb_plats = curs.execute(requete)
     curs.close()
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
@@ -57,7 +57,7 @@ def creer_page_accueil(ma_fenetre, connexion) :
     
     #On récupère le nombre de desserts enregistré dans la base
     curs = connexion.cursor()
-    requete = "count(*) from Desserts;"
+    requete = "select count(*) from Desserts;"
     nb_desserts = curs.execute(requete)
     curs.close()
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
@@ -72,7 +72,7 @@ def creer_page_accueil(ma_fenetre, connexion) :
     
     #On récupère le nombre de boissons enregistré dans la base
     curs = connexion.cursor()
-    requete = "count(*) from Boissons;"
+    requete = "select count(*) from Boissons;"
     nb_boissons = curs.execute(requete)
     curs.close()
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
