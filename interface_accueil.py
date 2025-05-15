@@ -9,13 +9,12 @@ def creer_page_accueil(ma_fenetre, connexion) :
     
     #definition de la fonction permettant de savoir quel texte s'affiche en dessous de la barre de progression
     def reste_repas(nb, nb_max) :
-        if nb_max == None :
+        if nb_max == 0 :
             return "Veuillez entrer le nombre de participants dans les paramètres"
         elif nb_max - nb == 0 : 
             return "Il y en a assez."
         else : 
             return "Il en manque " + (nb_max-nb) + ". "
-    
 
     Label(accueil_frame, 
           text="Total", 
@@ -39,11 +38,8 @@ def creer_page_accueil(ma_fenetre, connexion) :
     curs.execute(requete)
     nb_entrees = curs.fetchone()[0]
     curs.close()
-    #vérification de la valeur nb_max_entrees
-    if parametres_sauvegardes.get("nb_max_entrees") == None :
-        nb_max_entrees = 1
-    else : 
-        nb_max_entrees = parametres_sauvegardes.get("nb_max_entrees")
+    #obtenir nombre d'entrées max
+    nb_max_entrees = parametres_sauvegardes.get("nb_max_entrees", 0)
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
     ttk.Progressbar(accueil_frame, 
@@ -51,7 +47,7 @@ def creer_page_accueil(ma_fenetre, connexion) :
                     value=(taille - (nb_max_entrees - nb_entrees)/100 * taille)/100).grid(row=2, column=0, columnspan=2, pady=5)
 
     Label(accueil_frame, 
-          text=reste_repas(nb_entrees, parametres_sauvegardes.get("nb_max_entrees")), 
+          text=reste_repas(nb_entrees, nb_max_entrees), 
           bg="#f3e0ec", 
           fg="#450920", 
           font=("Arial", 8)).grid(row=3, column=0, columnspan=2, pady=5)
@@ -71,11 +67,8 @@ def creer_page_accueil(ma_fenetre, connexion) :
     nb_plats = curs.fetchone()[0]
     curs.close()
 
-    #vérification de la valeur nb_max_plats
-    if parametres_sauvegardes.get("nb_max_plats") == None :
-        nb_max_plats = 1
-    else : 
-        nb_max_plats = parametres_sauvegardes.get("nb_max_plats")
+    #obtenir nombre de plats max
+    nb_max_plats = parametres_sauvegardes.get("nb_max_plats", 0)
 
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
@@ -84,7 +77,7 @@ def creer_page_accueil(ma_fenetre, connexion) :
                     value=(taille - ((nb_max_plats - nb_plats)/100 * taille))/100).grid(row=5, column=0, columnspan=2, pady=5)
 
     Label(accueil_frame, 
-          text=reste_repas(nb_plats, parametres_sauvegardes.get("nb_max_plats")), 
+          text=reste_repas(nb_plats, nb_max_plats), 
           bg="#f3e0ec", 
           fg="#450920", 
           font=("Arial", 8)).grid(row=6, column=0, columnspan=2, pady=5)
@@ -103,11 +96,8 @@ def creer_page_accueil(ma_fenetre, connexion) :
     nb_desserts = curs.fetchone()[0]
     curs.close()
 
-    #vérification de la valeur nb_max_desserts
-    if parametres_sauvegardes.get("nb_max_desserts") == None :
-        nb_max_desserts = 1
-    else : 
-        nb_max_desserts = parametres_sauvegardes.get("nb_max_desserts")
+    #obtenir nombre de desserts max
+    nb_max_desserts = parametres_sauvegardes.get("nb_max_desserts", 0)
 
 
 
@@ -117,7 +107,7 @@ def creer_page_accueil(ma_fenetre, connexion) :
                     value=(taille - ((nb_max_desserts - nb_desserts)/100 * taille))/100).grid(row=8, column=0, columnspan=2, pady=5)
 
     Label(accueil_frame, 
-          text=reste_repas(nb_desserts, parametres_sauvegardes.get("nb_max_desserts")), 
+          text=reste_repas(nb_desserts, nb_max_desserts), 
           bg="#f3e0ec", 
           fg="#450920", 
           font=("Arial", 8)).grid(row=9, column=0, columnspan=2, pady=5)
@@ -136,11 +126,8 @@ def creer_page_accueil(ma_fenetre, connexion) :
     nb_boissons = curs.fetchone()[0]
     curs.close()
 
-    #vérification de la valeur nb_max_desserts
-    if parametres_sauvegardes.get("nb_max_boissons") == None :
-        nb_max_boissons = 1
-    else : 
-        nb_max_boissons = parametres_sauvegardes.get("nb_max_boissons")
+    #obtenir nombre de boissons max
+    nb_max_boissons = parametres_sauvegardes.get("nb_max_boissons", 0)
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
     ttk.Progressbar(accueil_frame, 
@@ -148,7 +135,7 @@ def creer_page_accueil(ma_fenetre, connexion) :
                     value=(taille - ((nb_max_boissons - nb_boissons)/100 * taille))/100).grid(row=11, column=0, columnspan=2, pady=5)
 
     Label(accueil_frame, 
-          text=reste_repas(nb_boissons, (parametres_sauvegardes.get("nb_max_boissons"))), 
+          text=reste_repas(nb_boissons, nb_max_boissons), 
           bg="#f3e0ec", 
           fg="#450920", 
           font=("Arial", 8)).grid(row=12, column=0, columnspan=2, pady=5)
