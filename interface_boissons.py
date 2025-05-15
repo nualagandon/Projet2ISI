@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from categorie_repas import CategorieRepas
+from interface_parametres import parametres_sauvegardes
 
 def creer_page_boissons(ma_fenetre, connection):
     boissons_frame = Frame(ma_fenetre, bg="#f3e0ec")
@@ -22,15 +23,34 @@ def creer_page_boissons(ma_fenetre, connection):
         nom = reponse_nom_boisson.get()
         etu = reponse_nom_etu.get()
         qt = reponse_qt_boisson.get()
-
-        if nom and etu and qt:
-            boissons.ajouter(nom, etu, qt)
-            charger_boissons()
-            reponse_nom_boisson.set("")
-            reponse_nom_etu.set("")
-            reponse_qt_boisson.set("")
-        else:
+        
+        if not nom or not etu or not qt:
             print("Veuillez remplir tous les champs.")
+            return
+        
+        try:
+            qt = int(qt)
+        except ValueError:
+            print("La quantité doit être un nombre entier.")
+            return
+        
+        total_boissons = sum(
+            int(tableau_boissons.item(item, "values")[2]) for item in tableau_boissons.get_children()
+        )
+
+        limite_boissons = parametres_sauvegardes.get("nb_max_boissons", 0)
+
+        if total_boissons + qt > limite_boissons:
+            print(f"Limite atteinte pour les boissons ({limite_boissons}). Vous ne pouvez pas ajouter plus de boissons.")
+            return
+        
+        
+        boissons.ajouter(nom, etu, qt)
+        charger_boissons()
+        reponse_nom_boisson.set("")
+        reponse_nom_etu.set("")
+        reponse_qt_boisson.set("")
+
 
     def supprimer_boissons():
         boissons.supprimer(tableau_boissons)

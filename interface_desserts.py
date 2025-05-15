@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from categorie_repas import CategorieRepas
+from interface_parametres import parametres_sauvegardes
 
 def creer_page_desserts(ma_fenetre, connection):
     desserts_frame = Frame(ma_fenetre, bg="#f3e0ec")
@@ -23,14 +24,32 @@ def creer_page_desserts(ma_fenetre, connection):
         etu = reponse_nom_etudiant_dessert.get()
         qt = reponse_qt_dessert_apportee.get()
 
-        if nom and etu and qt:
-            desserts.ajouter(nom, etu, qt)
-            charger_desserts()
-            reponse_nom_dessert.set("")
-            reponse_nom_etudiant_dessert.set("")
-            reponse_qt_dessert_apportee.set("")
-        else:
+        if not nom or not etu or not qt:
             print("Veuillez remplir tous les champs.")
+            return
+        
+        try:
+            qt = int(qt)
+        except ValueError:
+            print("La quantité doit être un nombre entier.")
+            return
+        
+        total_desserts = sum(
+            int(tableau_desserts.item(item, "values")[2]) for item in tableau_desserts.get_children()
+        )
+
+        limite_desserts = parametres_sauvegardes.get("nb_max_desserts", 0)
+        
+        if total_desserts + qt > limite_desserts:
+            print(f"Limite atteinte pour les desserts ({limite_desserts}). Vous ne pouvez pas ajouter plus de desserts.")
+            return
+    
+    
+        desserts.ajouter(nom, etu, qt)
+        charger_desserts()
+        reponse_nom_dessert.set("")
+        reponse_nom_etudiant_dessert.set("")
+        reponse_qt_dessert_apportee.set("")
 
     def supprimer_dessert():
         desserts.supprimer(tableau_desserts)

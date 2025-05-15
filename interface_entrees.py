@@ -28,13 +28,19 @@ def creer_page_entrees(ma_fenetre, connection):
             print("Veuillez remplir tous les champs.")
             return
         
+        try:
+            qt = int(qt)
+        except ValueError:
+            print("La quantité doit être un nombre entier.")
+            return
+        
         total_entrees = sum(
             int(tableau_entrees.item(item, "values")[2]) for item in tableau_entrees.get_children()
         )
         
         limite_entrees = parametres_sauvegardes.get("nb_max_entrees", 0)
 
-        if total_entrees >= limite_entrees:
+        if total_entrees + qt > limite_entrees:
             print(f"Limite atteinte pour les entrées ({limite_entrees}). Vous ne pouvez pas ajouter plus d'entrées.")
             return 
         
