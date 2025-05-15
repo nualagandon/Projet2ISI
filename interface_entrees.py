@@ -59,7 +59,7 @@ def creer_page_entrees(ma_fenetre, connection):
 
     Label(entrees_frame, text="Ajouter une entrée", bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=1, column=0, columnspan=2, pady=5)
 
-    Label(entrees_frame, text="Nom du plat", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=2, column=0, padx=5, pady=5)
+    Label(entrees_frame, text="Nom de l'entrée", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=2, column=0, padx=5, pady=5)
     Entry(entrees_frame, textvariable=reponse_nom_entree, width=30).grid(row=2, column=1, padx=5, pady=5)
 
     Label(entrees_frame, text="Nom de l'étudiant", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=3, column=0, padx=5, pady=5)
