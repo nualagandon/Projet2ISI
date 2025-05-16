@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import ttk
 from database import connecter_bd, creer_tables
 from categorie_repas import CategorieRepas
 from interface_entrees import creer_page_entrees
@@ -7,7 +8,6 @@ from interface_desserts import creer_page_desserts
 from interface_boissons import creer_page_boissons
 from interface_parametres import creer_page_parametres
 from interface_accueil import creer_page_accueil
-
 
 # Connexion à la base de données
 connexion = connecter_bd()
@@ -22,11 +22,23 @@ else:
 ma_fenetre = Tk()
 ma_fenetre.title("Organisation des repas")
 
+# Personnalisation de la couleur des barres de progression
+style = ttk.Style()
+style.theme_use("default")
+style.configure("pink.Horizontal.TProgressbar", troughcolor="#f3e0ec", background="#450920")
+
 def afficher_page(page):
     """Affiche la page choisie et cache les autres."""
+    global accueil_frame
     for frame in toutes_les_pages: 
-        frame.grid_forget()                     # Ferme toutes les pages
-    page.grid(row=1, column=0, sticky="nsew")   # Ouvre la page choisie
+        frame.grid_forget()                    # Ferme toutes les pages
+    
+    if page == accueil_frame:
+        accueil_frame = creer_page_accueil(ma_fenetre, connexion)
+        toutes_les_pages[0] = accueil_frame
+        accueil_frame.grid(row=1, column=0, sticky="nsew")  # Ouvre la page d'accueil
+    else:
+        page.grid(row=1, column=0, sticky="nsew")   # Ouvre la page choisie
 
 # Création de la page Entrées à l'aide de la fonction creer_page_entrees
 entrees_frame = creer_page_entrees(ma_fenetre, connexion)

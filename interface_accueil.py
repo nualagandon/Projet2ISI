@@ -14,7 +14,7 @@ def creer_page_accueil(ma_fenetre, connexion) :
         elif nb_max - nb == 0 : 
             return "Il y en a assez."
         else : 
-            return "Il en manque " + (nb_max-nb) + ". "
+            return "Il en manque " + str(nb_max-nb) + ". "
 
     Label(accueil_frame, 
           text="Total", 
@@ -34,17 +34,20 @@ def creer_page_accueil(ma_fenetre, connexion) :
     
     #On récupère le nombre de d'entrées enregistrées dans la base
     curs = connexion.cursor()
-    requete = "select count(*) from Entrees;"
+    requete = "select sum(qt_apportee) from Entrees;"
     curs.execute(requete)
-    nb_entrees = curs.fetchone()[0]
+    nb_entrees = curs.fetchone()[0] or 0
     curs.close()
     #obtenir nombre d'entrées max
-    nb_max_entrees = parametres_sauvegardes.get("nb_max_entrees", 0)
+    nb_max_entrees = parametres_sauvegardes.get("nb_max_entrees", 1)
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
     ttk.Progressbar(accueil_frame, 
                     length=taille, 
-                    value=(taille - (nb_max_entrees - nb_entrees)/100 * taille)/100).grid(row=2, column=0, columnspan=2, pady=5)
+                    value=(nb_entrees / nb_max_entrees * 100) if nb_max_entrees else 0,
+                    maximum=100,
+                    style="pink.Horizontal.TProgressbar"
+                    ).grid(row=2, column=0, columnspan=2, pady=5)
 
     Label(accueil_frame, 
           text=reste_repas(nb_entrees, nb_max_entrees), 
@@ -62,19 +65,22 @@ def creer_page_accueil(ma_fenetre, connexion) :
     
     #On récupère le nombre de plats enregistré dans la base
     curs = connexion.cursor()
-    requete = "select count(*) from Plats;"
+    requete = "select sum(qt_apportee) from Plats;"
     curs.execute(requete)
-    nb_plats = curs.fetchone()[0]
+    nb_plats = curs.fetchone()[0] or 0
     curs.close()
 
     #obtenir nombre de plats max
-    nb_max_plats = parametres_sauvegardes.get("nb_max_plats", 0)
+    nb_max_plats = parametres_sauvegardes.get("nb_max_plats", 1)
 
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
     ttk.Progressbar(accueil_frame,
                     length=taille, 
-                    value=(taille - ((nb_max_plats - nb_plats)/100 * taille))/100).grid(row=5, column=0, columnspan=2, pady=5)
+                    value=(nb_plats / nb_max_plats * 100) if nb_max_plats else 0,
+                    maximum=100,
+                    style="pink.Horizontal.TProgressbar"
+                    ).grid(row=5, column=0, columnspan=2, pady=5)
 
     Label(accueil_frame, 
           text=reste_repas(nb_plats, nb_max_plats), 
@@ -91,20 +97,23 @@ def creer_page_accueil(ma_fenetre, connexion) :
     
     #On récupère le nombre de desserts enregistré dans la base
     curs = connexion.cursor()
-    requete = "select count(*) from Desserts;"
+    requete = "select sum(qt_apportee) from Desserts;"
     curs.execute(requete)
-    nb_desserts = curs.fetchone()[0]
+    nb_desserts = curs.fetchone()[0] or 0
     curs.close()
 
     #obtenir nombre de desserts max
-    nb_max_desserts = parametres_sauvegardes.get("nb_max_desserts", 0)
+    nb_max_desserts = parametres_sauvegardes.get("nb_max_desserts", 1)
 
 
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
     ttk.Progressbar(accueil_frame,
                     length=taille, 
-                    value=(taille - ((nb_max_desserts - nb_desserts)/100 * taille))/100).grid(row=8, column=0, columnspan=2, pady=5)
+                    value=(nb_desserts / nb_max_desserts * 100) if nb_max_desserts else 0,
+                    maximum=100,
+                    style="pink.Horizontal.TProgressbar"
+                    ).grid(row=8, column=0, columnspan=2, pady=5)
 
     Label(accueil_frame, 
           text=reste_repas(nb_desserts, nb_max_desserts), 
@@ -121,18 +130,21 @@ def creer_page_accueil(ma_fenetre, connexion) :
     
     #On récupère le nombre de boissons enregistré dans la base
     curs = connexion.cursor()
-    requete = "select count(*) from Boissons;"
+    requete = "select sum(qt_apportee) from Boissons;"
     curs.execute(requete)
-    nb_boissons = curs.fetchone()[0]
+    nb_boissons = curs.fetchone()[0] or 0
     curs.close()
 
     #obtenir nombre de boissons max
-    nb_max_boissons = parametres_sauvegardes.get("nb_max_boissons", 0)
+    nb_max_boissons = parametres_sauvegardes.get("nb_max_boissons", 1)
 
     #nommer dans interface parametre, le maximum du nombre d'entree dans chaque etape du repas est nb_max_etape
     ttk.Progressbar(accueil_frame, 
                     length=taille, 
-                    value=(taille - ((nb_max_boissons - nb_boissons)/100 * taille))/100).grid(row=11, column=0, columnspan=2, pady=5)
+                    value=(nb_boissons / nb_max_boissons * 100) if nb_max_boissons else 0,
+                    maximum=100,
+                    style="pink.Horizontal.TProgressbar"
+                    ).grid(row=11, column=0, columnspan=2, pady=5)
 
     Label(accueil_frame, 
           text=reste_repas(nb_boissons, nb_max_boissons), 
