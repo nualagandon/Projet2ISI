@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import ttk
 from database import connecter_bd, creer_tables
-from categorie_repas import CategorieRepas
 from interface_entrees import creer_page_entrees
 from interface_plats import creer_page_plats
 from interface_desserts import creer_page_desserts

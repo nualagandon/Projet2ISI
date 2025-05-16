@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 
 parametres_sauvegardes = {}
 
@@ -16,16 +17,18 @@ def creer_page_parametres(ma_fenetre):
     reponse_desserts = StringVar()
     reponse_boissons = StringVar()
     
-    def sauvegarder_parametres():
+    def sauvegarder_parametres(afficher_message=True):
         try:
             parametres_sauvegardes["nb_participants"] = int(reponse_nb_participants.get())
             parametres_sauvegardes["nb_max_entrees"] = int(reponse_entrees.get())
             parametres_sauvegardes["nb_max_plats"] = int(reponse_plats.get())
             parametres_sauvegardes["nb_max_desserts"] = int(reponse_desserts.get())
             parametres_sauvegardes["nb_max_boissons"] = int(reponse_boissons.get())
-            print("Paramètres sauvegardés :", parametres_sauvegardes)
+            if afficher_message:
+                  messagebox.showinfo("Sauvegarde réussie", "Les paramètres ont été sauvegardés avec succès.")
         except ValueError:
-            print("Erreur : Veuillez entrer des valeurs valides.")
+            if afficher_message:
+                  messagebox.showerror("Erreur de sauvegarde", "Veuillez entrer des valeurs valides.")
 
     # Initialisation des valeurs du paramétrage automatique
     def initialiser_valeurs():
@@ -35,7 +38,7 @@ def creer_page_parametres(ma_fenetre):
             reponse_plats.set(int(nb_participants * 0.35))
             reponse_desserts.set(int(nb_participants * 0.25))
             reponse_boissons.set(int(nb_participants * 0.15))
-            sauvegarder_parametres()
+            sauvegarder_parametres(afficher_message=False)
         except ValueError:
             reponse_entrees.set("")
             reponse_plats.set("")
