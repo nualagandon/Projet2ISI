@@ -42,6 +42,10 @@ def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max
         if total + qt > limite:
             messagebox.showerror("Limite atteinte", f"Limite atteinte pour les {nom_categorie.lower()} ({limite}).")
             return
+        
+        if qt <= 0:
+            messagebox.showerror("Quantité impossible", "Entrez une quantité supérieure à 0.")
+            return
 
         categorie.ajouter(nom, etu, qt)
         charger()
