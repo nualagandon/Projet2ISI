@@ -53,7 +53,8 @@ def creer_page_accueil(ma_fenetre, connexion) :
           text=reste_repas(nb_entrees, nb_max_entrees), 
           bg="#f3e0ec", 
           fg="#450920", 
-          font=("Arial", 8)).grid(row=3, column=0, columnspan=2, pady=5)
+          font=("Arial", 8),
+          justify="left").grid(row=3, column=0, columnspan=2, pady=5)
 
 
     ####Partie plat de la page 
