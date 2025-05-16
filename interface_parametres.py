@@ -16,6 +16,13 @@ def creer_page_parametres(ma_fenetre, connexion):
     reponse_plats = StringVar()
     reponse_desserts = StringVar()
     reponse_boissons = StringVar()
+
+    #Fonction pour réinitialiser la base de données 
+    def reinitialiser() :
+            curs = connexion.cursor()
+            requete = "delete from Entrees; delete from Plats; delete from Desserts; delete from Boissons;"
+            curs.executescript(requete)
+            curs.close()
     
     def sauvegarder_parametres(afficher_message=True):
       #on vérifie si les quantités sont bonnes. 
@@ -180,6 +187,13 @@ def creer_page_parametres(ma_fenetre, connexion):
            bg="#450920",
            fg="white",
            font=("Arial", 14)).grid(row=7, column=0, columnspan=2, pady=10)
+    
+    Button(parametres_frame,
+           text="Réinitialiser",
+           command=reinitialiser,
+           bg="#450920",
+           fg="white",
+           font=("Arial", 14)).grid(row=8, column=2, pady=10)
     
     # Initialiser le paramétrage automatique au chargement de la page
     initialiser_valeurs()
