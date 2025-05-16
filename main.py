@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from database import connecter_bd, creer_tables
+from categorie_repas import CategorieRepas
 from interface_entrees import creer_page_entrees
 from interface_plats import creer_page_plats
 from interface_desserts import creer_page_desserts
@@ -45,7 +46,7 @@ plats_frame = creer_page_plats(ma_fenetre, connexion)
 desserts_frame = creer_page_desserts(ma_fenetre, connexion)
 boissons_frame = creer_page_boissons(ma_fenetre, connexion)
 accueil_frame = creer_page_accueil(ma_fenetre, connexion)
-parametres_frame = creer_page_parametres(ma_fenetre)
+parametres_frame = creer_page_parametres(ma_fenetre, connexion)
 
 # Liste contenant toutes les pages de l'application
 toutes_les_pages = [accueil_frame,entrees_frame, plats_frame,desserts_frame,boissons_frame,parametres_frame]

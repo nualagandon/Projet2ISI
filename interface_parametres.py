@@ -3,7 +3,7 @@ from tkinter import messagebox
 
 parametres_sauvegardes = {}
 
-def creer_page_parametres(ma_fenetre):
+def creer_page_parametres(ma_fenetre, connexion):
     global parametres_sauvegardes
 
     parametres_frame = Frame(ma_fenetre, bg="#f3e0ec")
@@ -18,15 +18,63 @@ def creer_page_parametres(ma_fenetre):
     reponse_boissons = StringVar()
     
     def sauvegarder_parametres(afficher_message=True):
-        try:
+      #on vérifie si les quantités sont bonnes. 
+      #on récupère d'abord les données déjà incluses dans la base de données
+      #On récupère le nombre de plats enregistré dans la base
+      curs = connexion.cursor()
+      requete = "select sum(qt_apportee) from Entrees;"
+      curs.execute(requete)
+      nb_entrees = curs.fetchone()[0] or 0
+      requete = "select sum(qt_apportee) from Plats;"
+      curs.execute(requete)
+      nb_plats = curs.fetchone()[0] or 0
+      requete = "select sum(qt_apportee) from Desserts;"
+      curs.execute(requete)
+      nb_desserts = curs.fetchone()[0] or 0
+      requete = "select sum(qt_apportee) from Boissons;"
+      curs.execute(requete)
+      nb_boissons = curs.fetchone()[0] or 0
+      curs.close()
+
+      #On vérifie qu'il n'y a pas de problème avec les quantités enregistrées et celles présentent dans la base
+      try:  
             parametres_sauvegardes["nb_participants"] = int(reponse_nb_participants.get())
-            parametres_sauvegardes["nb_max_entrees"] = int(reponse_entrees.get())
-            parametres_sauvegardes["nb_max_plats"] = int(reponse_plats.get())
-            parametres_sauvegardes["nb_max_desserts"] = int(reponse_desserts.get())
-            parametres_sauvegardes["nb_max_boissons"] = int(reponse_boissons.get())
+
+            if (int(reponse_entrees.get()) >= nb_entrees) :
+                  parametres_sauvegardes["nb_max_entrees"] = int(reponse_entrees.get())
+            else : 
+                 #on empêche l'affichage de l'enregistrement complet des valeurs.
+                 afficher_message = False
+                 #on prévient l'utilisateur.
+                 messagebox.showerror("Erreur de sauvegarde", "Le nombre d'entrées demandé est inférieur au nombre d'entrées déjà présent.")
+
+            if (int(reponse_plats.get()) >= nb_plats) :
+                  parametres_sauvegardes["nb_max_plats"] = int(reponse_plats.get())
+            else : 
+                 #on empêche l'affichage de l'enregistrement complet des valeurs.
+                 afficher_message = False
+                 #on prévient l'utilisateur.
+                 messagebox.showerror("Erreur de sauvegarde", "Le nombre de plat demandé est inférieur au nombre de plats déjà présent.")
+            
+            if (int(reponse_desserts.get()) >= nb_desserts) :
+                  parametres_sauvegardes["nb_max_desserts"] = int(reponse_desserts.get())
+            else : 
+                 #on empêche l'affichage de l'enregistrement complet des valeurs.
+                 afficher_message = False
+                 #on prévient l'utilisateur.
+                 messagebox.showerror("Erreur de sauvegarde", "Le nombre de desserts demandé est inférieur au nombre de desserts déjà présent.")
+            
+            if(int(reponse_boissons.get()) >= nb_boissons) :
+                  parametres_sauvegardes["nb_max_boissons"] = int(reponse_boissons.get())
+            else : 
+                 #on empêche l'affichage de l'enregistrement complet des valeurs.
+                 afficher_message = False
+                 #on prévient l'utilisateur.
+                 messagebox.showerror("Erreur de sauvegarde", "Le nombre de boissons demandé est inférieur au nombre de boissons déjà présent.")
+
             if afficher_message:
                   messagebox.showinfo("Sauvegarde réussie", "Les paramètres ont été sauvegardés avec succès.")
-        except ValueError:
+      except ValueError:
             if afficher_message:
                   messagebox.showerror("Erreur de sauvegarde", "Veuillez entrer des valeurs valides.")
 
