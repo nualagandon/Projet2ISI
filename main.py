@@ -29,16 +29,42 @@ style.configure("pink.Horizontal.TProgressbar", troughcolor="#f3e0ec", backgroun
 
 def afficher_page(page):
     """Affiche la page choisie et cache les autres."""
+    global parametres_frame
     global accueil_frame
+    global entrees_frame
+    global plats_frame
+    global boissons_frame
+    global desserts_frame
+
     for frame in toutes_les_pages: 
         frame.grid_forget()                    # Ferme toutes les pages
     
-    if page == accueil_frame:
-        accueil_frame = creer_page_accueil(ma_fenetre, connexion)
-        toutes_les_pages[0] = accueil_frame
-        accueil_frame.grid(row=1, column=0, sticky="nsew")  # Ouvre la page d'accueil
-    else:
-        page.grid(row=1, column=0, sticky="nsew")   # Ouvre la page choisie
+    if page == parametres_frame :
+        page.grid(row=1, column=0, sticky="nsew")   # Ouvre la page paramètre (est la seule qui n'a pas besoin d'être rafraichie)
+    
+    else : 
+        if page == accueil_frame:
+            accueil_frame = creer_page_accueil(ma_fenetre, connexion)
+            toutes_les_pages[0] = accueil_frame
+            accueil_frame.grid(row=1, column=0, sticky="nsew")  # Ouvre la page d'accueil
+        elif page == entrees_frame :
+            entrees_frame = creer_page_entrees(ma_fenetre, connexion)
+            toutes_les_pages[1] = entrees_frame
+            entrees_frame.grid(row=1, column=0, sticky="nsew") # Ouvre la page entrées
+        elif page == plats_frame :
+            plats_frame = creer_page_plats(ma_fenetre, connexion)
+            toutes_les_pages[2] = plats_frame
+            plats_frame.grid(row=1, column=0, sticky="nsew") # Ouvre la page plats
+        elif page == desserts_frame :
+            desserts_frame = creer_page_desserts(ma_fenetre, connexion)
+            toutes_les_pages[3] = desserts_frame
+            desserts_frame.grid(row=1, column=0, sticky="nsew") # Ouvre la page plats
+        elif page == boissons_frame :
+            boissons_frame = creer_page_boissons(ma_fenetre, connexion)
+            toutes_les_pages[3] = boissons_frame
+            boissons_frame.grid(row=1, column=0, sticky="nsew") # Ouvre la page plats
+        else:
+            page.grid(row=1, column=0, sticky="nsew")   # Ouvre la page parametre
 
 # Création de la page Entrées à l'aide de la fonction creer_page_entrees
 entrees_frame = creer_page_entrees(ma_fenetre, connexion)
