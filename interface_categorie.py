@@ -4,7 +4,7 @@ from categorie_repas import CategorieRepas
 from interface_parametres import parametres_sauvegardes
 
 
-def creer_page_categorie(ma_fenetre, nom_categorie, connexion, parametres_sauvegardes):
+def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max):
    
     frame = Frame(ma_fenetre, bg="#f3e0ec")
     frame.grid(row=1, column=0, sticky="nsew")
@@ -37,7 +37,7 @@ def creer_page_categorie(ma_fenetre, nom_categorie, connexion, parametres_sauveg
             int(tableau.item(item, "values")[2]) for item in tableau.get_children()
         )
 
-        limite = parametres_sauvegardes.get(parametres_sauvegardes, 0)
+        limite = parametres_sauvegardes.get(nom_parametre_max, 0)
 
         if total + qt > limite:
             messagebox.showerror("Limite atteinte", f"Limite atteinte pour les {nom_categorie.lower()} ({limite}).")
