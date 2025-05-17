@@ -3,129 +3,43 @@ import os
 from tkinter import *
 from tkinter import messagebox
 
+# Définition du nom de fichier dans lequel les paramètres seront sauvegardés
 FICHIER_PARAMETRES = "parametres.json"
 
+# Charger les paramètres depuis le fichier JSON, sinon retourner un dictionnaire vide
 def charger_parametres():
     if os.path.exists(FICHIER_PARAMETRES):
         with open(FICHIER_PARAMETRES, "r") as f:
             return json.load(f)
     return {}
 
+# Sauvegarder les paramètres dans le fichier JSON
 def sauvegarder_parametres_dans_fichier():
     with open(FICHIER_PARAMETRES, "w") as f:
         json.dump(parametres_sauvegardes, f)
 
+# Initialiser le dictionnaire des paramètres sauvegardés
 parametres_sauvegardes = charger_parametres()
+
 
 def creer_page_parametres(ma_fenetre, connexion):
     global parametres_sauvegardes
+    parametres_sauvegardes = charger_parametres()
 
     parametres_frame = Frame(ma_fenetre, bg="#f3e0ec")
     parametres_frame.grid(row=1, column=0, sticky="new")
     
     # Variables liées aux champs de saisie
-    nb_participants_init = parametres_sauvegardes.get("nb_participants", 15)
-    reponse_nb_participants = StringVar(value=str(nb_participants_init))
-    parametrage_auto = BooleanVar(value=True)
-    reponse_entrees = StringVar()
-    reponse_plats = StringVar()
-    reponse_desserts = StringVar()
-    reponse_boissons = StringVar()
+    reponse_nb_participants = StringVar(value=str(parametres_sauvegardes.get("nb_participants", 15)))
+    parametrage_auto = BooleanVar(value=parametres_sauvegardes.get("parametrage_auto", True))
 
-    def on_nb_participants_change(*args):
-         if parametrage_auto.get():
-            initialiser_valeurs()
-    reponse_nb_participants.trace_add("write", on_nb_participants_change)
+    reponse_entrees = StringVar(value=str(parametres_sauvegardes.get("nb_max_entrees", "")))
+    reponse_plats = StringVar(value=str(parametres_sauvegardes.get("nb_max_plats", "")))
+    reponse_desserts = StringVar(value=str(parametres_sauvegardes.get("nb_max_desserts", "")))
+    reponse_boissons = StringVar(value=str(parametres_sauvegardes.get("nb_max_boissons", "")))
 
-    #Fonction pour réinitialiser la base de données 
-    def reinitialiser() :
-        reponse = messagebox.askyesno("Confirmation de réinitialisation", "⚠️ ATTENTION : tout le contenu enregistré précédemment sera supprimé (tous les tableaux seront vidés).\n\nVoulez-vous continuer ?")
-        if reponse:
-            curs = connexion.cursor()
-            requete = "delete from Entrees; delete from Plats; delete from Desserts; delete from Boissons;"
-            curs.executescript(requete)
-            curs.close()
-        
-            # Réinitialiser les paramètres
-            parametres_sauvegardes["nb_participants"] = 15
-            reponse_nb_participants.set("15")
-            parametrage_auto.set(True)
-            initialiser_valeurs()
-            reglage_parametrage_auto()
-            sauvegarder_parametres_dans_fichier()
 
-            # Mise à jour des paramètres sauvegardés
-            parametres_sauvegardes["nb_max_entrees"] = int(reponse_entrees.get())
-            parametres_sauvegardes["nb_max_plats"] = int(reponse_plats.get())
-            parametres_sauvegardes["nb_max_desserts"] = int(reponse_desserts.get())
-            parametres_sauvegardes["nb_max_boissons"] = int(reponse_boissons.get())
-            
-            # Message indiquant la réinitialisation réussie
-            messagebox.showinfo("Réinitialisation réussie", "Toutes les données ont été supprimées.\n\nLe paramétrage a été réinitialisé avec succès.")
-    
-    def sauvegarder_parametres(afficher_message=True):
-      #on vérifie si les quantités sont bonnes. 
-      #on récupère d'abord les données déjà incluses dans la base de données
-      #On récupère le nombre de plats enregistré dans la base
-      curs = connexion.cursor()
-      requete = "select sum(qt_apportee) from Entrees;"
-      curs.execute(requete)
-      nb_entrees = curs.fetchone()[0] or 0
-      requete = "select sum(qt_apportee) from Plats;"
-      curs.execute(requete)
-      nb_plats = curs.fetchone()[0] or 0
-      requete = "select sum(qt_apportee) from Desserts;"
-      curs.execute(requete)
-      nb_desserts = curs.fetchone()[0] or 0
-      requete = "select sum(qt_apportee) from Boissons;"
-      curs.execute(requete)
-      nb_boissons = curs.fetchone()[0] or 0
-      curs.close()
-
-      #On vérifie qu'il n'y a pas de problème avec les quantités enregistrées et celles présentent dans la base
-      try:  
-            parametres_sauvegardes["nb_participants"] = int(reponse_nb_participants.get())
-
-            if (int(reponse_entrees.get()) >= nb_entrees) :
-                  parametres_sauvegardes["nb_max_entrees"] = int(reponse_entrees.get())
-            else : 
-                 #on empêche l'affichage de l'enregistrement complet des valeurs.
-                 afficher_message = False
-                 #on prévient l'utilisateur.
-                 messagebox.showerror("Erreur de sauvegarde", "Le nombre d'entrées demandé est inférieur au nombre d'entrées déjà présent.")
-
-            if (int(reponse_plats.get()) >= nb_plats) :
-                  parametres_sauvegardes["nb_max_plats"] = int(reponse_plats.get())
-            else : 
-                 #on empêche l'affichage de l'enregistrement complet des valeurs.
-                 afficher_message = False
-                 #on prévient l'utilisateur.
-                 messagebox.showerror("Erreur de sauvegarde", "Le nombre de plat demandé est inférieur au nombre de plats déjà présent.")
-            
-            if (int(reponse_desserts.get()) >= nb_desserts) :
-                  parametres_sauvegardes["nb_max_desserts"] = int(reponse_desserts.get())
-            else : 
-                 #on empêche l'affichage de l'enregistrement complet des valeurs.
-                 afficher_message = False
-                 #on prévient l'utilisateur.
-                 messagebox.showerror("Erreur de sauvegarde", "Le nombre de desserts demandé est inférieur au nombre de desserts déjà présent.")
-            
-            if(int(reponse_boissons.get()) >= nb_boissons) :
-                  parametres_sauvegardes["nb_max_boissons"] = int(reponse_boissons.get())
-            else : 
-                 #on empêche l'affichage de l'enregistrement complet des valeurs.
-                 afficher_message = False
-                 #on prévient l'utilisateur.
-                 messagebox.showerror("Erreur de sauvegarde", "Le nombre de boissons demandé est inférieur au nombre de boissons déjà présent.")
-
-            if afficher_message:
-                  messagebox.showinfo("Sauvegarde réussie", "Les paramètres ont été sauvegardés avec succès.")
-                  sauvegarder_parametres_dans_fichier()
-      except ValueError:
-            if afficher_message:
-                  messagebox.showerror("Erreur de sauvegarde", "Veuillez entrer des valeurs valides.")
-
-    # Initialisation des valeurs du paramétrage automatique
+    # Calcule automatiquement les quantités maximales d’entrées, plats, desserts et boissons en fonction du nombre de participants.
     def initialiser_valeurs():
         try:
             nb_participants = int(reponse_nb_participants.get())
@@ -139,23 +53,105 @@ def creer_page_parametres(ma_fenetre, connexion):
             reponse_desserts.set("")
             reponse_boissons.set("")
 
-    # Fonction pour le paramétrage automatique
+    # Active ou désactive les champs de saisie manuelle selon l’état de la case « paramétrage automatique
     def reglage_parametrage_auto():
+        etat = "disabled" if parametrage_auto.get() else "normal"
+        input_entree.config(state=etat)
+        input_plat.config(state=etat)
+        input_dessert.config(state=etat)
+        input_boisson.config(state=etat)
+
         if parametrage_auto.get():
             initialiser_valeurs()
-            # Désactiver les champs d'entrée
-            input_entree.config(state="disabled")
-            input_plat.config(state="disabled")
-            input_dessert.config(state="disabled")
-            input_boisson.config(state="disabled")
         else:
-            # Désactiver les champs d'entrée
-            input_entree.config(state="normal")
-            input_plat.config(state="normal")
-            input_dessert.config(state="normal")
-            input_boisson.config(state="normal")
+            reponse_entrees.set(parametres_sauvegardes.get("nb_max_entrees", ""))
+            reponse_plats.set(parametres_sauvegardes.get("nb_max_plats", ""))
+            reponse_desserts.set(parametres_sauvegardes.get("nb_max_desserts", ""))
+            reponse_boissons.set(parametres_sauvegardes.get("nb_max_boissons", ""))
 
-    # Interface
+    # Met à jour les quantités si le nombre de participants change et si le mode automatique est activé        
+    def on_nb_participants_change(*args):
+         if parametrage_auto.get():
+            initialiser_valeurs()
+
+    # Supprime toutes les donées des tables de la base de données et réinitialise les paramètres et sauvegarde dans le fichier JSON
+    def reinitialiser():
+        if messagebox.askyesno("Confirmation de réinitialisation", "⚠️ ATTENTION : tout sera supprimé. Voulez-vous continuer ?"):
+            curs = connexion.cursor()
+            curs.executescript("DELETE FROM Entrees; DELETE FROM Plats; DELETE FROM Desserts; DELETE FROM Boissons;")
+            curs.close()
+
+            reponse_nb_participants.set("15")
+            parametrage_auto.set(True)
+            initialiser_valeurs()
+            reglage_parametrage_auto()
+
+            parametres_sauvegardes.update({
+                "nb_participants": 15,
+                "parametrage_auto": True,
+                "nb_max_entrees": int(reponse_entrees.get()),
+                "nb_max_plats": int(reponse_plats.get()),
+                "nb_max_desserts": int(reponse_desserts.get()),
+                "nb_max_boissons": int(reponse_boissons.get()),
+            })
+
+            sauvegarder_parametres_dans_fichier()
+            messagebox.showinfo("Réinitialisation réussie", "Toutes les données ont été supprimées et les paramètres réinitialisés.")
+
+    # Sauvegarde les paramètres dans le fichier JSON et vérifie les erreurs
+    def sauvegarder_parametres():
+        try:
+            nb_participants = int(reponse_nb_participants.get())
+            nb_max_entrees = int(reponse_entrees.get())
+            nb_max_plats = int(reponse_plats.get())
+            nb_max_desserts = int(reponse_desserts.get())
+            nb_max_boissons = int(reponse_boissons.get())
+
+            # Vérifications
+            curs = connexion.cursor()
+            erreurs = []
+
+            def verif_table(table, nb_max, nom):
+                curs.execute(f"SELECT SUM(qt_apportee) FROM {table};")
+                nb_enregistre = curs.fetchone()[0] or 0
+                if nb_max < nb_enregistre:
+                    erreurs.append(f"Le nombre de {nom} est inférieur à ce qui est déjà enregistré.")
+                return nb_enregistre
+
+            verif_table("Entrees", nb_max_entrees, "d'entrées")
+            verif_table("Plats", nb_max_plats, "de plats")
+            verif_table("Desserts", nb_max_desserts, "de desserts")
+            verif_table("Boissons", nb_max_boissons, "de boissons")
+            curs.close()
+
+            if any(val < 0 for val in [nb_max_entrees, nb_max_plats, nb_max_desserts, nb_max_boissons]):
+                erreurs.append("Les quantités doivent être positives.")
+
+            if erreurs:
+                messagebox.showerror("Erreur de sauvegarde", "\n".join(erreurs))
+                return
+
+            parametres_sauvegardes.update({
+                "nb_participants": nb_participants,
+                "parametrage_auto": parametrage_auto.get(),
+                "nb_max_entrees": nb_max_entrees,
+                "nb_max_plats": nb_max_plats,
+                "nb_max_desserts": nb_max_desserts,
+                "nb_max_boissons": nb_max_boissons,
+            })
+
+            sauvegarder_parametres_dans_fichier()
+            messagebox.showinfo("Sauvegarde réussie", "Les paramètres ont été sauvegardés avec succès.")
+
+        except ValueError:
+            messagebox.showerror("Erreur", "Veuillez entrer des valeurs valides.")
+
+    
+    # Lie le champ de nombre de participants à une fonction qui s'execute à chaque fois que la valeur change
+    reponse_nb_participants.trace_add("write", on_nb_participants_change)
+
+    # Création de l'interface graphique
+
     Label(parametres_frame, 
           text="Paramètres", 
           bg="#f3e0ec", 
@@ -165,7 +161,6 @@ def creer_page_parametres(ma_fenetre, connexion):
     
     form_frame = Frame(parametres_frame, bg="#f3e0ec", bd=2, relief="groove")
     form_frame.pack(pady=10, padx=20, fill="x")
-
     form_frame.grid_columnconfigure(0, weight=1)
     form_frame.grid_columnconfigure(3, weight=1)
 
@@ -233,6 +228,7 @@ def creer_page_parametres(ma_fenetre, connexion):
     boutons_frame = Frame(parametres_frame, bg="#f3e0ec")
     boutons_frame.pack(pady=(10, 0))
 
+    # Bouton pour sauvegarder les paramètres saisis
     Button(boutons_frame,
            text="Sauvegarder le paramétrage",
            command=sauvegarder_parametres,
@@ -240,6 +236,7 @@ def creer_page_parametres(ma_fenetre, connexion):
            fg="white", relief="raised",
            font=("Arial", 14)).pack(side="left", padx=10)
     
+    # Bouton pour tout réinitialiser (après confirmation)
     Button(boutons_frame,
            text="Réinitialiser",
            command=reinitialiser,
@@ -248,7 +245,7 @@ def creer_page_parametres(ma_fenetre, connexion):
            font=("Arial", 14)).pack(side="left", padx=10)
     
     # Initialiser le paramétrage automatique au chargement de la page
-    initialiser_valeurs()
+    reglage_parametrage_auto()
 
     return parametres_frame
           

@@ -1,9 +1,16 @@
 from tkinter import *
 from tkinter import ttk
 from categorie_repas import CategorieRepas
-from interface_parametres import parametres_sauvegardes
+from interface_parametres import parametres_sauvegardes, charger_parametres
 
+# Fonction pour créer la page d'accueil
+# Cette page affiche le nombre total d'entrées, de plats, de desserts et de boissons apportés
 def creer_page_accueil(ma_fenetre, connexion) :
+    # Chargement des paramètres de sauvegarde
+    global parametres_sauvegardes
+    parametres_sauvegardes = charger_parametres()
+
+    # Création du cadre principal de la page d'accueil
     accueil_frame = Frame(ma_fenetre, bg="#f3e0ec")
     accueil_frame.grid(row=1, column=0, sticky="nsew")
     accueil_frame.rowconfigure(0, weight=1)

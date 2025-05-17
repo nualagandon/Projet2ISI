@@ -1,11 +1,13 @@
 from tkinter import *
 from tkinter import ttk, messagebox
 from categorie_repas import CategorieRepas
-from interface_parametres import parametres_sauvegardes
+from interface_parametres import parametres_sauvegardes, charger_parametres
 
-
+# Fonction pour créer la page de la catégorie de repas
 def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max):
-   
+    global parametres_sauvegardes
+    parametres_sauvegardes = charger_parametres()
+
     frame = Frame(ma_fenetre, bg="#f3e0ec")
     frame.grid(row=1, column=0, sticky="nsew")
 
@@ -15,9 +17,11 @@ def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max
     reponse_nom_etu = StringVar()
     reponse_qt = StringVar()
 
+    # Fonction pour charger les données dans le tableau
     def charger():
         categorie.charger(tableau)
     
+    # Fonction pour ajouter une nouvelle entrée
     def ajouter():
         nom = reponse_nom.get().strip()
         etu = reponse_nom_etu.get().strip()
@@ -53,6 +57,7 @@ def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max
         reponse_nom_etu.set("")
         reponse_qt.set("")
 
+    # Fonction pour supprimer une entrée
     def supprimer():
         categorie.supprimer(tableau)
         charger()
@@ -100,7 +105,7 @@ def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max
         if nom_categorie[:-1].lower() == "entree" or nom_categorie[:-1].lower() == "boisson":
             Button(form_frame, text=f"Ajouter une {nom_categorie[:-1].lower()}",command=ajouter, bg="#a53860", fg="white", font=("Arial", 14), relief="raised").grid(row=4, column=1, columnspan=2, pady=(15, 10))
         else:
-            Button(form_frame, text=f"Ajouter un(e) {nom_categorie[:-1].lower()}",command=ajouter, bg="#a53860", fg="white", font=("Arial", 14), relief="raised").grid(row=4, column=1, columnspan=2, pady=(15, 10))
+            Button(form_frame, text=f"Ajouter un {nom_categorie[:-1].lower()}",command=ajouter, bg="#a53860", fg="white", font=("Arial", 14), relief="raised").grid(row=4, column=1, columnspan=2, pady=(15, 10))
     else :
         Label(frame, text="La quantité maximale est atteinte", bg="#f3e0ec", fg="#a53860", font=("Arial", 14)).pack(pady=(10, 20), fill="x")
 

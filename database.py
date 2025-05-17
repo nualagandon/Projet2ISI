@@ -1,5 +1,6 @@
 import sqlite3
 
+# Connexion à la base de données SQLite
 def connecter_bd():
     try:
         connexion = sqlite3.connect("repas.db")
@@ -8,6 +9,7 @@ def connecter_bd():
         print(f"Erreur de connexion à la base de données : {e}")
         return None
 
+# Création des tables dans la base de données si elles n'existent pas
 def creer_tables(connexion):
     try:
         curs = connexion.cursor()
