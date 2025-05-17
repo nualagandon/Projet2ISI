@@ -58,17 +58,25 @@ def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max
         charger()
 
     # Interface
-    Label(frame, text=nom_categorie, bg="#f3e0ec", fg="#450920", font=("Arial", 28)).grid(row=0, column=0, columnspan=2, pady=10)
-    Label(frame, text=f"Ajouter un(e) {nom_categorie[:-1].lower()}", bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=1, column=0, columnspan=2, pady=5)
+    Label(frame, text=nom_categorie, bg="#f3e0ec", fg="#450920", font=("Arial", 28, "bold")
+          ).pack(pady=(20, 10))
+    
+    form_frame = Frame(frame, bg="#f3e0ec", bd=2, relief="groove")
+    form_frame.pack(pady=10, padx=20, fill="x", expand=True)
 
-    Label(frame, text=f"Nom du {nom_categorie[:-1].lower()}", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=2, column=0, padx=5, pady=5)
-    Entry(frame, textvariable=reponse_nom, width=30).grid(row=2, column=1, padx=5, pady=5)
+    form_frame.grid_columnconfigure(0, weight=1)
+    form_frame.grid_columnconfigure(3, weight=1)
+    
+    Label(form_frame, text=f"Ajouter un(e) {nom_categorie[:-1].lower()}",bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=0, column=1, columnspan=2, pady=(10, 15))
 
-    Label(frame, text="Nom de l'étudiant", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=3, column=0, padx=5, pady=5)
-    Entry(frame, textvariable=reponse_nom_etu, width=30).grid(row=3, column=1, padx=5, pady=5)
+    Label(form_frame, text=f"Nom du {nom_categorie[:-1].lower()}", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=1, column=1, padx=10, pady=5, sticky="e")
+    Entry(form_frame, textvariable=reponse_nom, width=30).grid(row=1, column=2, padx=10, pady=5, sticky="w")
 
-    Label(frame, text="Quantité apportée", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=4, column=0, padx=5, pady=5)
-    Entry(frame, textvariable=reponse_qt, width=30).grid(row=4, column=1, padx=5, pady=5)
+    Label(form_frame, text="Nom de l'étudiant", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=2, column=1, padx=10, pady=5, sticky="e")
+    Entry(form_frame, textvariable=reponse_nom_etu, width=30).grid(row=2, column=2, padx=10, pady=5, sticky="w")
+
+    Label(form_frame, text="Quantité apportée", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=3, column=1, padx=10, pady=5, sticky="e")
+    Entry(form_frame, textvariable=reponse_qt, width=30).grid(row=3, column=2, padx=10, pady=5, sticky="w")
 
     #On vérifie si les quantités sont atteintes. 
     curs = connexion.cursor()
@@ -80,21 +88,32 @@ def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max
     #on récupère le max :
     max_repas = parametres_sauvegardes.get(f"nb_max_{nom_categorie.lower()}", -1)
     if (nb < max_repas or max_repas == -1) :
-        Button(frame, text=f"Ajouter un(e) {nom_categorie[:-1].lower()}", command=ajouter, bg="#a53860", fg="white", font=("Arial", 14)).grid(row=5, column=0, columnspan=2, pady=10)
+        Button(form_frame, text=f"Ajouter un(e) {nom_categorie[:-1].lower()}",command=ajouter, bg="#a53860", fg="white", font=("Arial", 14), relief="raised").grid(row=4, column=1, columnspan=2, pady=(15, 10))
     else :
-        Label(frame, text="La quantité maximale est atteinte", bg="#f3e0ec", fg="#a53860", font=("Arial", 14)).grid(row=5, column=0, columnspan=2, pady=10)
+        Label(frame, text="La quantité maximale est atteinte", bg="#f3e0ec", fg="#a53860", font=("Arial", 14)).grid(row=5, column=0, columnspan=2, pady=    tableau.heading("nom", text="Nom")10)
 
 
-    tableau = ttk.Treeview(frame, columns=("nom", "nom_etudiant", "qt_apportee"), show="headings", height=10)
-    tableau.heading("nom", text="Nom")
+     # Tableau
+    tableau_frame = Frame(frame, bg="#f3e0ec")
+    tableau_frame.pack(pady=10, padx=20, fill="both", expand=True)
+    
+    style = ttk.Style()
+    style.configure("Custom.Treeview", background="#fff", foreground="#450920", rowheight=28)
+    style.configure("Custom.Treeview.Heading", background="#a53860", foreground="white", font=("Arial", 12, "bold"))
+    
+    tableau = ttk.Treeview(
+        tableau_frame, columns=("nom", "nom_etudiant", "qt_apportee"),
+        show="headings", height=10, style="Custom.Treeview"
+    )
+
     tableau.heading("nom_etudiant", text="Personne")
     tableau.heading("qt_apportee", text="Quantité")
     tableau.column("nom", width=150, anchor="center")
     tableau.column("nom_etudiant", width=150, anchor="center")
     tableau.column("qt_apportee", width=100, anchor="center")
-    tableau.grid(row=6, column=0, columnspan=2, pady=10)
+    tableau.pack(fill="both", expand=True)
 
-    Button(frame, text=f"Supprimer un(e) {nom_categorie[:-1].lower()}", command=supprimer, bg="#a53860", fg="white", font=("Arial", 14)).grid(row=7, column=0, columnspan=2, pady=10)
+    Button(frame, text=f"Supprimer un(e) {nom_categorie[:-1].lower()}", command=supprimer, bg="#a53860", fg="white", font=("Arial", 14), relief="raised").pack(pady=(10, 20))
 
     charger()
 

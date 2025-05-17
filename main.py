@@ -25,7 +25,7 @@ ma_fenetre.title("Organisation des repas")
 # Personnalisation de la couleur des barres de progression
 style = ttk.Style()
 style.theme_use("default")
-style.configure("pink.Horizontal.TProgressbar", troughcolor="#f3e0ec", background="#450920")
+style.configure("pink.Horizontal.TProgressbar", troughcolor="white", background="#a53860", bordercolor="#a53860")
 
 def afficher_page(page):
     """Affiche la page choisie et cache les autres."""
@@ -75,36 +75,84 @@ accueil_frame = creer_page_accueil(ma_fenetre, connexion)
 parametres_frame = creer_page_parametres(ma_fenetre, connexion)
 
 # Liste contenant toutes les pages de l'application
-toutes_les_pages = [accueil_frame,entrees_frame, plats_frame,desserts_frame,boissons_frame,parametres_frame]
+toutes_les_pages = [None, entrees_frame, plats_frame, desserts_frame, boissons_frame, parametres_frame]
+
+ma_fenetre.rowconfigure(1, weight=1)
+ma_fenetre.columnconfigure(0, weight=1)
 
 # Création de la barre de navigation
-navbar = Frame(ma_fenetre, bg="#0d1b1e", height=50)
-navbar.grid(row=0, column=0, sticky="ew")
+
+# Ajout d'un frame pour gérer l'alignement de la barre de navigation
+navbar_frame = Frame(ma_fenetre, bg="#0d1b1e")
+navbar_frame.grid(row=0, column=0, sticky="ew")
+navbar_frame.grid_columnconfigure(0, weight=1)
+navbar_frame.grid_columnconfigure(1, weight=0)
+
+navbar = Frame(navbar_frame, bg="#0d1b1e", height=50)
+navbar.grid(row=0, column=0, sticky="e")
+
+# Suivi des boutons de la barre de navigation
+boutons_widgets = []
+
+def afficher_page_et_surbrillance(index):
+    global accueil_frame
+
+
+    print(f"Affichage de la page index {index}")
+
+
+    # Masquer toutes les pages
+    for frame in toutes_les_pages:
+        if frame is not None:
+            frame.grid_forget()
+
+    # Si la page est l'accueil (index 0), on la crée à nouveau afin de mettre à jour les données pour les barres de progression
+    if index == 0:
+        accueil_frame = creer_page_accueil(ma_fenetre, connexion)
+        toutes_les_pages[0] = accueil_frame
+        accueil_frame.grid(row=1, column=0, sticky="nsew")   
+    else:
+        toutes_les_pages[index].grid(row=1, column=0, sticky="nsew")   
+   
+    for i, bouton in enumerate(boutons_widgets):
+        if i == index:
+            bouton.config(bg='#f2f2f2', fg='#0d1b1e')
+        else:
+            bouton.config(bg='#0d1b1e', fg='#f2f2f2')
+
 
 # Liste des boutons de la barre de navigation
 boutons = [
-    ("Accueil", lambda: afficher_page(accueil_frame)),
-    ("Entrées", lambda: afficher_page(entrees_frame)),
-    ("Plats", lambda: afficher_page(plats_frame)),
-    ("Desserts", lambda: afficher_page(desserts_frame)),
-    ("Boissons", lambda: afficher_page(boissons_frame)),
-    ("Paramètres", lambda: afficher_page(parametres_frame)),
+    ("Accueil", 0),
+    ("Entrées", 1),
+    ("Plats", 2),
+    ("Desserts", 3),
+    ("Boissons", 4),
+    ("Paramètres", 5),
 ]
 
+def creer_commande_bouton(index):
+    return lambda: afficher_page_et_surbrillance(index)
+
 # Création des boutons dans barre de navigation
-for i, (nom, commande) in enumerate(boutons):
+for i, (nom, index) in enumerate(boutons):
     bouton = Button(
         navbar,
         text=nom,
-        command=commande,
+        command= creer_commande_bouton(index),
         bg="#0d1b1e",
         fg="white",
-        font=("Arial", 14)
+        font=("Arial", 16),
+        bd=0,
+        relief="flat",
+        padx=10,
+        pady=5,
     )
     bouton.grid(row=0, column=i, padx=8, pady=5)
+    boutons_widgets.append(bouton)
 
-# Affichage de la page d'entrées par défaut
-afficher_page(entrees_frame)
+# Affichage de la page Accueil par défaut
+afficher_page_et_surbrillance(0)
 
 # Boucle principale de l'application
 ma_fenetre.mainloop()
