@@ -67,9 +67,18 @@ def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max
     form_frame.grid_columnconfigure(0, weight=1)
     form_frame.grid_columnconfigure(3, weight=1)
     
-    Label(form_frame, text=f"Ajouter un(e) {nom_categorie[:-1].lower()}",bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=0, column=1, columnspan=2, pady=(10, 15))
+    if nom_categorie[:-1].lower() == "entree" or nom_categorie[:-1].lower() == "boisson":
+        Label(form_frame, text=f"Ajouter une {nom_categorie[:-1].lower()}",bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=0, column=1, columnspan=2, pady=(10, 15))
+    else:
+        Label(form_frame, text=f"Ajouter un {nom_categorie[:-1].lower()}",bg="#f3e0ec", fg="#450920", font=("Arial", 18)).grid(row=0, column=1, columnspan=2, pady=(10, 15))
 
-    Label(form_frame, text=f"Nom du {nom_categorie[:-1].lower()}", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=1, column=1, padx=10, pady=5, sticky="e")
+    print(nom_categorie[:-1].lower())
+    if nom_categorie[:-1].lower() == "boisson":
+        Label(form_frame, text=f"Nom de la {nom_categorie[:-1].lower()}", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=1, column=1, padx=10, pady=5, sticky="e")
+    elif nom_categorie[:-1].lower() == "entree":
+        Label(form_frame, text=f"Nom de l'{nom_categorie[:-1].lower()}", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=1, column=1, padx=10, pady=5, sticky="e")
+    else:
+        Label(form_frame, text=f"Nom du {nom_categorie[:-1].lower()}", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=1, column=1, padx=10, pady=5, sticky="e")
     Entry(form_frame, textvariable=reponse_nom, width=30).grid(row=1, column=2, padx=10, pady=5, sticky="w")
 
     Label(form_frame, text="Nom de l'étudiant", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=2, column=1, padx=10, pady=5, sticky="e")
@@ -88,9 +97,12 @@ def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max
     #on récupère le max :
     max_repas = parametres_sauvegardes.get(f"nb_max_{nom_categorie.lower()}", -1)
     if (nb < max_repas or max_repas == -1) :
-        Button(form_frame, text=f"Ajouter un(e) {nom_categorie[:-1].lower()}",command=ajouter, bg="#a53860", fg="white", font=("Arial", 14), relief="raised").grid(row=4, column=1, columnspan=2, pady=(15, 10))
+        if nom_categorie[:-1].lower() == "entree" or nom_categorie[:-1].lower() == "boisson":
+            Button(form_frame, text=f"Ajouter une {nom_categorie[:-1].lower()}",command=ajouter, bg="#a53860", fg="white", font=("Arial", 14), relief="raised").grid(row=4, column=1, columnspan=2, pady=(15, 10))
+        else:
+            Button(form_frame, text=f"Ajouter un(e) {nom_categorie[:-1].lower()}",command=ajouter, bg="#a53860", fg="white", font=("Arial", 14), relief="raised").grid(row=4, column=1, columnspan=2, pady=(15, 10))
     else :
-        Label(frame, text="La quantité maximale est atteinte", bg="#f3e0ec", fg="#a53860", font=("Arial", 14)).grid(row=5, column=0, columnspan=2, pady=    tableau.heading("nom", text="Nom")10)
+        Label(frame, text="La quantité maximale est atteinte", bg="#f3e0ec", fg="#a53860", font=("Arial", 14)).pack(pady=(10, 20), fill="x")
 
 
      # Tableau
@@ -106,14 +118,21 @@ def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max
         show="headings", height=10, style="Custom.Treeview"
     )
 
+    tableau.heading("nom", text=nom_categorie[:-1].capitalize())
     tableau.heading("nom_etudiant", text="Personne")
     tableau.heading("qt_apportee", text="Quantité")
     tableau.column("nom", width=150, anchor="center")
     tableau.column("nom_etudiant", width=150, anchor="center")
     tableau.column("qt_apportee", width=100, anchor="center")
-    tableau.pack(fill="both", expand=True)
+    tableau.pack(fill="both", expand=False)
 
-    Button(frame, text=f"Supprimer un(e) {nom_categorie[:-1].lower()}", command=supprimer, bg="#a53860", fg="white", font=("Arial", 14), relief="raised").pack(pady=(10, 20))
+    if nom_categorie[:-1].lower() == "entree" or nom_categorie[:-1].lower() == "boisson":
+        Button(frame, text=f"Supprimer une {nom_categorie[:-1].lower()}",
+           command=supprimer, bg="#a53860", fg="white", font=("Arial", 14), relief="raised"
+           ).pack(pady=(10, 20))
+    else:
+        Button(frame, text=f"Supprimer un {nom_categorie[:-1].lower()}",
+           command=supprimer, bg="#a53860", fg="white", font=("Arial", 14), relief="raised").pack(pady=(10, 20))
 
     charger()
 

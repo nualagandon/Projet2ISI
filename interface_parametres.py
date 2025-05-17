@@ -1,28 +1,67 @@
+import json
+import os
 from tkinter import *
 from tkinter import messagebox
 
-parametres_sauvegardes = {}
+FICHIER_PARAMETRES = "parametres.json"
+
+def charger_parametres():
+    if os.path.exists(FICHIER_PARAMETRES):
+        with open(FICHIER_PARAMETRES, "r") as f:
+            return json.load(f)
+    return {}
+
+def sauvegarder_parametres_dans_fichier():
+    with open(FICHIER_PARAMETRES, "w") as f:
+        json.dump(parametres_sauvegardes, f)
+
+parametres_sauvegardes = charger_parametres()
 
 def creer_page_parametres(ma_fenetre, connexion):
     global parametres_sauvegardes
 
     parametres_frame = Frame(ma_fenetre, bg="#f3e0ec")
-    parametres_frame.grid(row=1, column=0, sticky="nsew")
-
+    parametres_frame.grid(row=1, column=0, sticky="new")
+    
     # Variables liées aux champs de saisie
-    reponse_nb_participants = StringVar(value="15")
+    nb_participants_init = parametres_sauvegardes.get("nb_participants", 15)
+    reponse_nb_participants = StringVar(value=str(nb_participants_init))
     parametrage_auto = BooleanVar(value=True)
     reponse_entrees = StringVar()
     reponse_plats = StringVar()
     reponse_desserts = StringVar()
     reponse_boissons = StringVar()
 
+    def on_nb_participants_change(*args):
+         if parametrage_auto.get():
+            initialiser_valeurs()
+    reponse_nb_participants.trace_add("write", on_nb_participants_change)
+
     #Fonction pour réinitialiser la base de données 
     def reinitialiser() :
+        reponse = messagebox.askyesno("Confirmation de réinitialisation", "⚠️ ATTENTION : tout le contenu enregistré précédemment sera supprimé (tous les tableaux seront vidés).\n\nVoulez-vous continuer ?")
+        if reponse:
             curs = connexion.cursor()
             requete = "delete from Entrees; delete from Plats; delete from Desserts; delete from Boissons;"
             curs.executescript(requete)
             curs.close()
+        
+            # Réinitialiser les paramètres
+            parametres_sauvegardes["nb_participants"] = 15
+            reponse_nb_participants.set("15")
+            parametrage_auto.set(True)
+            initialiser_valeurs()
+            reglage_parametrage_auto()
+            sauvegarder_parametres_dans_fichier()
+
+            # Mise à jour des paramètres sauvegardés
+            parametres_sauvegardes["nb_max_entrees"] = int(reponse_entrees.get())
+            parametres_sauvegardes["nb_max_plats"] = int(reponse_plats.get())
+            parametres_sauvegardes["nb_max_desserts"] = int(reponse_desserts.get())
+            parametres_sauvegardes["nb_max_boissons"] = int(reponse_boissons.get())
+            
+            # Message indiquant la réinitialisation réussie
+            messagebox.showinfo("Réinitialisation réussie", "Toutes les données ont été supprimées.\n\nLe paramétrage a été réinitialisé avec succès.")
     
     def sauvegarder_parametres(afficher_message=True):
       #on vérifie si les quantités sont bonnes. 
@@ -81,6 +120,7 @@ def creer_page_parametres(ma_fenetre, connexion):
 
             if afficher_message:
                   messagebox.showinfo("Sauvegarde réussie", "Les paramètres ont été sauvegardés avec succès.")
+                  sauvegarder_parametres_dans_fichier()
       except ValueError:
             if afficher_message:
                   messagebox.showerror("Erreur de sauvegarde", "Veuillez entrer des valeurs valides.")
@@ -93,7 +133,6 @@ def creer_page_parametres(ma_fenetre, connexion):
             reponse_plats.set(int(nb_participants * 0.35))
             reponse_desserts.set(int(nb_participants * 0.25))
             reponse_boissons.set(int(nb_participants * 0.15))
-            sauvegarder_parametres(afficher_message=False)
         except ValueError:
             reponse_entrees.set("")
             reponse_plats.set("")
@@ -121,79 +160,92 @@ def creer_page_parametres(ma_fenetre, connexion):
           text="Paramètres", 
           bg="#f3e0ec", 
           fg="#450920", 
-          font=("Arial", 28)).grid(row=0, column=0, columnspan=2, pady=10) 
+          font=("Arial", 28,"bold")
+          ).pack(pady=(10, 5))
+    
+    form_frame = Frame(parametres_frame, bg="#f3e0ec", bd=2, relief="groove")
+    form_frame.pack(pady=10, padx=20, fill="x")
 
-    Label(parametres_frame, 
+    form_frame.grid_columnconfigure(0, weight=1)
+    form_frame.grid_columnconfigure(3, weight=1)
+
+    Label(form_frame, 
           text="Nombre de participants",
           bg="#f3e0ec",
           fg="#450920",
-          font=("Arial", 14)).grid(row=1, column=0, padx=5, pady=5)
+          font=("Arial", 14)
+          ).grid(row=0, column=1, padx=10, pady=5, sticky="e")
     
-    Entry(parametres_frame,
+    Entry(form_frame,
           textvariable=reponse_nb_participants,
-          width=30).grid(row=1, column=1, padx=5, pady=5)
+          width=30
+          ).grid(row=0, column=2, padx=10, pady=5, sticky="w")
     
-    Checkbutton(parametres_frame,
+    Checkbutton(form_frame,
                 text="Paramétrage automatique",
                 variable=parametrage_auto,
                 command = reglage_parametrage_auto,
                 bg="#f3e0ec",
                 fg="#450920",
-                font=("Arial", 14)).grid(row=2, column=0, columnspan=2, pady=5)
+                font=("Arial", 14)
+                ).grid(row=1, column=1, columnspan=2, pady=(10, 15))
     
-    Label(parametres_frame,
+    Label(form_frame,
           text="Entrées",
           bg="#f3e0ec",
           fg="#450920",
-          font=("Arial", 14)).grid(row=3, column=0, padx=5, pady=5)
-    input_entree = Entry(parametres_frame,
+          font=("Arial", 14)).grid(row=2, column=1, padx=10, pady=5, sticky="e")
+    input_entree = Entry(form_frame,
           textvariable=reponse_entrees,
           width=30, state="disabled")
-    input_entree.grid(row=3, column=1, padx=5, pady=5)
+    input_entree.grid(row=2, column=2, padx=10, pady=5, sticky="w")
     
-    Label(parametres_frame,
+    Label(form_frame,
           text="Plats",
           bg="#f3e0ec",
           fg="#450920",
-          font=("Arial", 14)).grid(row=4, column=0, padx=5, pady=5)
-    input_plat = Entry(parametres_frame,
+          font=("Arial", 14)).grid(row=3, column=1, padx=10, pady=5, sticky="e")
+    input_plat = Entry(form_frame,
           textvariable=reponse_plats,
           width=30, state="disabled")
-    input_plat.grid(row=4, column=1, padx=5, pady=5)
+    input_plat.grid(row=3, column=2, padx=10, pady=5, sticky="w")
 
-    Label(parametres_frame,
+    Label(form_frame,
           text="Desserts",
           bg="#f3e0ec",
           fg="#450920",
-          font=("Arial", 14)).grid(row=5, column=0, padx=5, pady=5)
-    input_dessert = Entry(parametres_frame,
+          font=("Arial", 14)).grid(row=4, column=1, padx=10, pady=5, sticky="e")
+    input_dessert = Entry(form_frame,
           textvariable=reponse_desserts,
           width=30, state="disabled")
-    input_dessert.grid(row=5, column=1, padx=5, pady=5)
+    input_dessert.grid(row=4, column=2, padx=10, pady=5, sticky="w")
     
-    Label(parametres_frame,
+    Label(form_frame,
           text="Boissons",
           bg="#f3e0ec",
           fg="#450920",
-          font=("Arial", 14)).grid(row=6, column=0, padx=5, pady=5)
-    input_boisson = Entry(parametres_frame,
+          font=("Arial", 14)).grid(row=5, column=1, padx=10, pady=5, sticky="e")
+    input_boisson = Entry(form_frame,
           textvariable=reponse_boissons,
           width=30, state="disabled")
-    input_boisson.grid(row=6, column=1, padx=5, pady=5)
+    input_boisson.grid(row=5, column=2, padx=10, pady=5, sticky="w")
     
-    Button(parametres_frame,
+    boutons_frame = Frame(parametres_frame, bg="#f3e0ec")
+    boutons_frame.pack(pady=(10, 0))
+
+    Button(boutons_frame,
            text="Sauvegarder le paramétrage",
            command=sauvegarder_parametres,
-           bg="#450920",
-           fg="white",
-           font=("Arial", 14)).grid(row=7, column=0, columnspan=2, pady=10)
+           bg="#a53860",
+           fg="white", relief="raised",
+           font=("Arial", 14)).pack(side="left", padx=10)
     
-    Button(parametres_frame,
+    Button(boutons_frame,
            text="Réinitialiser",
            command=reinitialiser,
-           bg="#450920",
-           fg="white",
-           font=("Arial", 14)).grid(row=8, column=2, pady=10)
+           bg="#a53860",
+           fg="white", relief="raised",
+           font=("Arial", 14)).pack(side="left", padx=10)
     
     # Initialiser le paramétrage automatique au chargement de la page
     initialiser_valeurs()
