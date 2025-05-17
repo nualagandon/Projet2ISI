@@ -42,6 +42,10 @@ def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max
         if total + qt > limite:
             messagebox.showerror("Limite atteinte", f"Limite atteinte pour les {nom_categorie.lower()} ({limite}).")
             return
+        
+        if qt <= 0:
+            messagebox.showerror("Quantité impossible", "Entrez une quantité supérieure à 0.")
+            return
 
         categorie.ajouter(nom, etu, qt)
         charger()
@@ -66,7 +70,20 @@ def creer_page_categorie(ma_fenetre, nom_categorie, connexion, nom_parametre_max
     Label(frame, text="Quantité apportée", bg="#f3e0ec", fg="#450920", font=("Arial", 14)).grid(row=4, column=0, padx=5, pady=5)
     Entry(frame, textvariable=reponse_qt, width=30).grid(row=4, column=1, padx=5, pady=5)
 
-    Button(frame, text=f"Ajouter un(e) {nom_categorie[:-1].lower()}", command=ajouter, bg="#a53860", fg="white", font=("Arial", 14)).grid(row=5, column=0, columnspan=2, pady=10)
+    #On vérifie si les quantités sont atteintes. 
+    curs = connexion.cursor()
+    requete = f"select sum(qt_apportee) from {nom_categorie};"
+    curs.execute(requete)
+    nb = curs.fetchone()[0] or 0
+    curs.close()
+
+    #on récupère le max :
+    max_repas = parametres_sauvegardes.get(f"nb_max_{nom_categorie.lower()}", -1)
+    if (nb < max_repas or max_repas == -1) :
+        Button(frame, text=f"Ajouter un(e) {nom_categorie[:-1].lower()}", command=ajouter, bg="#a53860", fg="white", font=("Arial", 14)).grid(row=5, column=0, columnspan=2, pady=10)
+    else :
+        Label(frame, text="La quantité maximale est atteinte", bg="#f3e0ec", fg="#a53860", font=("Arial", 14)).grid(row=5, column=0, columnspan=2, pady=10)
+
 
     tableau = ttk.Treeview(frame, columns=("nom", "nom_etudiant", "qt_apportee"), show="headings", height=10)
     tableau.heading("nom", text="Nom")
